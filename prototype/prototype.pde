@@ -26,6 +26,7 @@ class Settings {
     public static final int NORMAL_BLOCK_COLOR = #30343F;
     public static final int DEADLY_BLOCK_COLOR = #C32929;
     public static final int BALL_COLOR = #1A4489;
+    public static final int TEXT_SCORE_COLOR = #CEC5E5;
 }
 
 class BorderPart {
@@ -157,9 +158,15 @@ void drawBall(Ball ball) {
     ellipse(ball.x, ball.y, Settings.BALL_SIZE, Settings.BALL_SIZE);
 }
 
+void drawScore() {
+    fill(Settings.TEXT_SCORE_COLOR);
+    text(String.valueOf(score), Settings.SCREEN_WIDTH / 2, Settings.SCREEN_HEIGHT / 2);
+}
+
 void render() {
     background(Settings.BACKGROUND_COLOR);
 
+    drawScore();
     drawBorders();
     drawBall(ball);
 }
@@ -174,6 +181,9 @@ void setup() {
     smooth(4);
     frameRate(60);
     background(Settings.BACKGROUND_COLOR);
+    
+    textSize(30);
+    textAlign(CENTER, CENTER);
 
     prepareModel();
 }
