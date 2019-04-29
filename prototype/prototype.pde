@@ -1,5 +1,4 @@
-import processing.pdf.*;
-import g4p_controls.*;
+
 
 enum BorderPartType {
     NORMAL, 
@@ -10,7 +9,7 @@ class Settings {
     // sizes
     public static final int SCREEN_WIDTH = 300;
     public static final int SCREEN_HEIGHT = (int)(SCREEN_WIDTH * (16/(float)9));
-    public static final int BORDER_PART_WIDTH = (int)(SCREEN_WIDTH * 0.03);
+    public static final int BORDER_PART_WIDTH = (int)(SCREEN_WIDTH * 0.05);
     public static final int BORDER_PART_HEIGHT = (int)(SCREEN_HEIGHT * 0.1);
     public static final int BALL_SIZE = (int)(SCREEN_WIDTH * 0.08);
     
@@ -60,7 +59,7 @@ BorderPartType randomBorderPartType() {
 
 void prepareModel() {
 
-    int numberOfParts = Settings.SCREEN_HEIGHT / Settings.BORDER_PART_HEIGHT + 1;
+    int numberOfParts = Settings.SCREEN_HEIGHT / Settings.BORDER_PART_HEIGHT + 2;
     for (int i = 0; i < numberOfParts; i++) {
         BorderPart borderPart = new BorderPart();
         borderPart.x = 0;
@@ -164,7 +163,9 @@ void drawScore() {
 }
 
 void render() {
-    background(Settings.BACKGROUND_COLOR);
+    fill(Settings.BACKGROUND_COLOR, 100);
+    rect(0, 0, width, height);
+    //background(Settings.BACKGROUND_COLOR);
 
     drawScore();
     drawBorders();
