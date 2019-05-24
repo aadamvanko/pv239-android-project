@@ -1,139 +1,23 @@
-package processing.test.prototype
+package cz.muni.fi.pv239.project.game
 
-import android.util.Half.toFloat
-import processing.core.*
-import processing.data.*
-import processing.event.*
-import processing.opengl.*
+import android.graphics.Color
+import cz.muni.fi.pv239.project.game.entities.Ball
+import cz.muni.fi.pv239.project.game.entities.BorderPart
+import cz.muni.fi.pv239.project.game.enums.BorderPartType
+import cz.muni.fi.pv239.project.game.enums.GameState
+import processing.core.PApplet
+import java.util.*
 
-import java.util.HashMap
-import java.util.ArrayList
-import java.io.File
-import java.io.BufferedReader
-import java.io.PrintWriter
-import java.io.InputStream
-import java.io.OutputStream
-import java.io.IOException
+class GameApplet() : PApplet() {
 
-class Prototype : PApplet() {
-    // LOOP
     internal lateinit var game: Game
+    internal lateinit var callback: GameFragmentInterface
 
-    internal enum class GameState {
-        READY,
-        RUNNING,
-        FINISHED
+    constructor(callback: GameFragmentInterface) : this() {
+        this.callback = callback
     }
 
-    internal enum class BorderPartType {
-        NORMAL,
-        DEADLY,
-        MULTIPLIER
-    }
-
-    internal inner class BorderPart {
-        var x: Int = 0
-        var y: Int = 0
-        var type = BorderPartType.NORMAL;
-    }
-
-    internal inner class Ball {
-        var x: Float = 0f
-        var y: Float = 0f
-        var velx: Float = 0f
-        var vely: Float = 0f
-    }
-
-    internal inner class Settings {
-        // sizes
-        var SCREEN_WIDTH = 1080
-        var SCREEN_HEIGHT = (SCREEN_WIDTH * (16 / 9f)).toInt()
-
-        var BORDER_PART_WIDTH = (SCREEN_WIDTH * 0.05f).toInt()
-        var BORDER_PART_HEIGHT = (SCREEN_HEIGHT * 0.1f).toInt()
-        var BALL_SIZE = (SCREEN_WIDTH * 0.08f).toInt()
-        // mechanics
-        var GRAVITY = 0.4f
-        var MAX_VELOCITY = 10.0f
-        var JUMP_VELOCITY = 8.0f
-        var MAX_BORDERS_SPEED = 10
-        var BALL_VELOCITY_X = 4.0f
-        // colors
-        var BACKGROUND_COLOR = -0x1
-        var NORMAL_BLOCK_COLOR = -0xcfcbc1
-        var DEADLY_BLOCK_COLOR = -0x3cd6d7
-        var MULTIPLIER_BLOCK_COLOR = -0x9ac
-        var BALL_COLOR = -0xe5bb77
-        var TEXT_SCORE_COLOR = -0x191e0e
-    }
-
-    internal inner class Model {
-        var score: Long = 0
-        var gameSpeed = 1
-        var multiplier: Long = 1
-        var borders: ArrayList<BorderPart> =
-
-                ArrayList()
-
-        lateinit var ball: Ball
-        var realFrameCount = 0
-    }
-
-    internal inner class Renderer(settings: Settings, model: Model) {
-        private val settings: Settings
-        private val model: Model
-
-        init {
-            this.settings = settings
-            this.model = model
-        }
-
-        fun render() {
-            fill(settings.BACKGROUND_COLOR.toInt(), 100.0f)
-            rect(0f, 0f, width.toFloat(), height.toFloat())
-            //background(settings.BACKGROUND_COLOR);
-            drawScore(model)
-            drawBorders(model.borders)
-            //drawEnemy(enemy);
-            drawBall(model.ball)
-        }
-
-        fun drawBorderPart(borderPart: BorderPart) {
-            noStroke()
-            if (borderPart.type == BorderPartType.NORMAL) {
-                fill(settings.NORMAL_BLOCK_COLOR)
-            } else if (borderPart.type == BorderPartType.DEADLY) {
-                fill(settings.DEADLY_BLOCK_COLOR)
-            } else if (borderPart.type == BorderPartType.MULTIPLIER) {
-                fill(settings.MULTIPLIER_BLOCK_COLOR)
-            }
-            rect(borderPart.x.toFloat(), borderPart.y.toFloat(), settings.BORDER_PART_WIDTH.toFloat(), settings.BORDER_PART_HEIGHT.toFloat())
-        }
-
-        fun drawBorders(borders: ArrayList<BorderPart>) {
-            for (borderPart in borders) {
-                drawBorderPart(borderPart)
-            }
-        }
-
-        fun drawBall(ball: Ball) {
-            noStroke()
-            fill(settings.BALL_COLOR)
-            ellipse(ball.x, ball.y, settings.BALL_SIZE.toFloat(), settings.BALL_SIZE.toFloat())
-        }
-
-        fun drawScore(model: Model) {
-            fill(settings.TEXT_SCORE_COLOR)
-            val fontSize = settings.SCREEN_WIDTH / 10f
-            textSize(fontSize)
-            text("x" + (model.multiplier).toString(), settings.SCREEN_WIDTH / 2f, settings.SCREEN_HEIGHT / 2 - fontSize / 2)
-            text((model.score).toString(), settings.SCREEN_WIDTH / 2f, settings.SCREEN_HEIGHT / 2 + fontSize / 2)
-        }
-    }
-
-    internal inner
-
-    class Game(width: Int) {
+    inner class Game(width: Int) {
         private var isMouseDown = false
         var state = GameState.READY
         private lateinit var settings: Settings
@@ -151,11 +35,15 @@ class Prototype : PApplet() {
         }
 
         fun update() {
-            handleInput()
-            model.gameSpeed = min(model.realFrameCount / 500 + 1, settings.MAX_BORDERS_SPEED)
-            model.score += model.gameSpeed * model.multiplier
-            model.realFrameCount++
-            moveBorders(model.borders)
+            if (state == GameState.RUNNING) {
+                handleInput()
+
+                model.gameSpeed = PApplet.min(model.realFrameCount / 500 + 1, settings.MAX_BORDERS_SPEED)
+                model.score += model.gameSpeed * model.multiplier
+                model.realFrameCount++
+                moveBorders(model.borders)
+            }
+
             moveBall(model.ball, model.borders)
         }
 
@@ -172,6 +60,10 @@ class Prototype : PApplet() {
 
         fun render() {
             renderer.render()
+        }
+
+        fun getScore(): Long {
+            return model.score
         }
 
         private fun preparesettings(screenWidth: Int) {
@@ -233,7 +125,7 @@ class Prototype : PApplet() {
             } else if (value < 14) {
                 return BorderPartType.DEADLY
             } else {
-                if (frameCount % 2 === 0) {
+                if (frameCount % 2 == 0) {
                     return BorderPartType.MULTIPLIER
                 } else {
                     return BorderPartType.NORMAL
@@ -295,13 +187,65 @@ class Prototype : PApplet() {
             }
             ball.y += ball.vely
             ball.vely += settings.GRAVITY
-            ball.vely = min(ball.vely, settings.MAX_VELOCITY)
+            ball.vely = PApplet.min(ball.vely, settings.MAX_VELOCITY)
             if (ball.y >= settings.SCREEN_HEIGHT) {
                 state = GameState.FINISHED
             }
             if (ball.y - settings.BALL_SIZE / 2 < 0) {
                 ball.vely = settings.JUMP_VELOCITY / 3
             }
+        }
+    }
+
+    inner class Renderer(settings: Settings, model: Model) {
+        private val settings: Settings
+        private val model: Model
+
+        init {
+            this.settings = settings
+            this.model = model
+        }
+
+        fun render() {
+            fill(settings.BACKGROUND_COLOR.toInt(), 100.0f)
+            rect(0f, 0f, width.toFloat(), height.toFloat())
+            //background(settings.BACKGROUND_COLOR);
+            drawScore(model)
+            drawBorders(model.borders)
+            //drawEnemy(enemy);
+            drawBall(model.ball)
+        }
+
+        fun drawBorderPart(borderPart: BorderPart) {
+            noStroke()
+            if (borderPart.type == BorderPartType.NORMAL) {
+                fill(settings.NORMAL_BLOCK_COLOR)
+            } else if (borderPart.type == BorderPartType.DEADLY) {
+                fill(settings.DEADLY_BLOCK_COLOR)
+            } else if (borderPart.type == BorderPartType.MULTIPLIER) {
+                fill(settings.MULTIPLIER_BLOCK_COLOR)
+            }
+            rect(borderPart.x.toFloat(), borderPart.y.toFloat(), settings.BORDER_PART_WIDTH.toFloat(), settings.BORDER_PART_HEIGHT.toFloat())
+        }
+
+        fun drawBorders(borders: ArrayList<BorderPart>) {
+            for (borderPart in borders) {
+                drawBorderPart(borderPart)
+            }
+        }
+
+        fun drawBall(ball: Ball) {
+            noStroke()
+            fill(settings.BALL_COLOR)
+            ellipse(ball.x, ball.y, settings.BALL_SIZE.toFloat(), settings.BALL_SIZE.toFloat())
+        }
+
+        fun drawScore(model: Model) {
+            fill(settings.TEXT_SCORE_COLOR)
+            val fontSize = settings.SCREEN_WIDTH / 10f
+            textSize(fontSize)
+            text("x" + (model.multiplier).toString(), settings.SCREEN_WIDTH / 2f, settings.SCREEN_HEIGHT / 2 - fontSize / 2)
+            text((model.score).toString(), settings.SCREEN_WIDTH / 2f, settings.SCREEN_HEIGHT / 2 + fontSize / 2)
         }
     }
 
@@ -314,16 +258,39 @@ class Prototype : PApplet() {
         game = Game(width)
     }
 
+    private var scoreSaved: Boolean = false
+
     override fun draw() {
-        if (game.state == GameState.RUNNING) {
+        if (game.state != GameState.READY) {
             game.update()
         }
+
         game.render()
+
+        if (game.state == GameState.FINISHED) {
+            if (!scoreSaved) {
+                callback.onGameOver(game.getScore())
+                scoreSaved = true
+            }
+
+            showGameOverText()
+        }
+    }
+
+    private fun showGameOverText() {
+        fill(Color.BLACK)
+        val fontSize = width / 10f
+        textSize(fontSize)
+        text("GAME OVER\nTap for new game", width / 2f, height / 2f)
     }
 
     override fun mousePressed() {
         if (game.state == GameState.READY) {
             game.run()
+        }
+        if (game.state == GameState.FINISHED) {
+            game = Game(width)
+            scoreSaved = false
         }
     }
 
@@ -331,4 +298,5 @@ class Prototype : PApplet() {
         fullScreen(P3D)
         smooth(4)
     }
+
 }

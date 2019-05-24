@@ -1,0 +1,11 @@
+<resources>
+    <string name="button_play_text">Play</string>
+    <string name="button_high_scores_text">High Scores</string>
+    <string name="button_change_user_text">Change User</string>
+    <string name="label_high_scores_text">High Scores</string>
+    <string name="button_select_user_text">Select user</string>
+    <string name="button_delete_user_text">Delete user</string>
+    <string name="button_new_user_text">New user</string>
+    <string name="button_new_user_ok_text">OK</string>
+    <string name="label_new_user_name_text">New user name:</string>
+</resources>
