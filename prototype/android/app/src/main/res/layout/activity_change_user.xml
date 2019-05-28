@@ -21,28 +21,35 @@
             android:textSize="36sp"></TextView>
     </android.support.v7.widget.LinearLayoutCompat>
 
-    <android.support.v7.widget.LinearLayoutCompat
-        android:id="@+id/linear_layout_actions"
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/linear_layout_title">
+        android:layout_gravity="bottom|right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
-        <Button
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/button_new_user"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_new_user_text"
-            android:textAllCaps="false"
-            android:textSize="18sp" />
+            android:src="@android:color/transparent" />
 
-    </android.support.v7.widget.LinearLayoutCompat>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:elevation="16dp"
+            android:textSize="20dp"
+            android:text="+"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white" />
+    </FrameLayout>
 
     <android.support.v7.widget.LinearLayoutCompat
         android:id="@+id/linear_layout_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/linear_layout_actions">
+        app:layout_constraintTop_toBottomOf="@id/linear_layout_title">
 
         <ListView
             android:layout_width="match_parent"

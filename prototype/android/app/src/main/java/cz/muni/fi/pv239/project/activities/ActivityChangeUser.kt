@@ -3,8 +3,8 @@ package cz.muni.fi.pv239.project.activities
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
-import android.widget.Button
 import android.widget.ListView
 import cz.muni.fi.pv239.project.adapters.UsersAdapter
 import cz.muni.fi.pv239.project.db.DatabaseImpl
@@ -19,7 +19,7 @@ class ActivityChangeUser : AppCompatActivity() {
     private val uiHandler = Handler()
 
     private lateinit var usersListView: ListView
-    private lateinit var buttonNewUser: Button
+    private lateinit var buttonNewUser: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
