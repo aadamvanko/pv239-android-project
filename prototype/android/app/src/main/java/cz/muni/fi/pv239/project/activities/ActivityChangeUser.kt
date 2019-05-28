@@ -24,6 +24,7 @@ class ActivityChangeUser : AppCompatActivity() {
     private lateinit var usersListView: ListView
     private lateinit var buttonNewUser: FloatingActionButton
     private var userName: String = ""
+    private lateinit var loadedUsers: List<User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +76,7 @@ class ActivityChangeUser : AppCompatActivity() {
                     showDataInUI(users)
                 }
             }
+            loadedUsers = users!!
         }
         dbWorkerThread.postTask(task)
     }
@@ -90,9 +92,17 @@ class ActivityChangeUser : AppCompatActivity() {
 
     override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
-        if (menu != null && v != null) {
+        if (menu != null && v != null && chosenUserNotSelected()) {
             menu.add(0, 0, 0, "Delete")
         }
+    }
+
+    private fun chosenUserNotSelected(): Boolean {
+        val selectedUser = loadedUsers.find({ it.selected })
+        if (selectedUser != null) {
+            return selectedUser.name != userName
+        }
+        return true
     }
 
     override fun onContextItemSelected(item: MenuItem?): Boolean {
