@@ -13,11 +13,6 @@
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation" />
         <activity
-            android:name="cz.muni.fi.pv239.project.activities.ActivityUserOperations"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation" />
-        <activity
             android:name="cz.muni.fi.pv239.project.activities.ActivityChangeUser"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             android:screenOrientation="portrait"

@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
+import android.view.ContextMenu
+import android.view.MenuItem
+import android.view.View
 import android.widget.ListView
 import cz.muni.fi.pv239.project.adapters.UsersAdapter
 import cz.muni.fi.pv239.project.db.DatabaseImpl
@@ -20,6 +23,7 @@ class ActivityChangeUser : AppCompatActivity() {
 
     private lateinit var usersListView: ListView
     private lateinit var buttonNewUser: FloatingActionButton
+    private var userName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,12 +32,18 @@ class ActivityChangeUser : AppCompatActivity() {
         usersListView = findViewById(R.id.list_view_users)
         usersListView.setOnItemClickListener { parent, view, position, id ->
             val entry = parent.adapter.getItem(position) as User
-            parent.setSelection(position)
-
-            var intent = Intent(this, ActivityUserOperations::class.java)
-            intent.putExtra("userName", entry.name)
-            this.startActivity(intent)
+            userName = entry.name
+            selectUser()
+            loadUsersFromDb()
         }
+
+        usersListView.setOnItemLongClickListener { parent, view, position, id ->
+            val entry = parent.adapter.getItem(position) as User
+            userName = entry.name
+            false
+        }
+
+        registerForContextMenu(usersListView)
 
         buttonNewUser = findViewById(R.id.button_new_user)
         buttonNewUser.setOnClickListener {
@@ -46,6 +56,12 @@ class ActivityChangeUser : AppCompatActivity() {
         Thread.sleep(500)
 
         database = DatabaseImpl.getInstance(this)
+        loadUsersFromDb()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         loadUsersFromDb()
     }
 
@@ -67,15 +83,66 @@ class ActivityChangeUser : AppCompatActivity() {
         usersListView.adapter = UsersAdapter(users, layoutInflater)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        loadUsersFromDb()
-    }
-
     override fun onDestroy() {
         dbWorkerThread.quit()
         super.onDestroy()
+    }
+
+    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        if (menu != null && v != null) {
+            menu.add(0, 0, 0, "Delete")
+        }
+    }
+
+    override fun onContextItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            if (item.itemId == 0) {
+                deleteUser()
+                loadUsersFromDb()
+            }
+        }
+        return true
+    }
+
+    private fun selectUser() {
+        val task = Runnable {
+            val user = loadUserFromDb()
+            if (user != null) {
+                val users = database?.userDAO()?.getAll()
+                if (users != null) {
+                    for (fetchedUser in users) {
+                        if (fetchedUser.name != user.name && fetchedUser.selected) {
+                            fetchedUser.selected = false
+                            database?.userDAO()?.update(fetchedUser)
+                        }
+                    }
+                }
+                user.selected = true
+                database?.userDAO()?.update(user)
+            }
+        }
+        dbWorkerThread.postTask(task)
+    }
+
+    private fun deleteUser() {
+        val task = Runnable {
+            val user = loadUserFromDb()
+            if (user != null && !user.selected) {
+                database?.userDAO()?.delete(user)
+            }
+        }
+        dbWorkerThread.postTask(task)
+    }
+
+    private fun loadUserFromDb(): User {
+        val users = database?.userDAO()?.getAll()
+        for (fetchedUser in users!!) {
+            if (fetchedUser.name == userName) {
+                return fetchedUser
+            }
+        }
+        throw Exception("User with given name not found, internal error between activities")
     }
 
 }

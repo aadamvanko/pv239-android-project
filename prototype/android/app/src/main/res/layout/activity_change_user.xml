@@ -55,7 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/list_view_users"
-            android:orientation="vertical"></ListView>
+            android:orientation="vertical"
+            android:choiceMode="singleChoice"></ListView>
 
     </android.support.v7.widget.LinearLayoutCompat>
 
