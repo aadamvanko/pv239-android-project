@@ -9,6 +9,15 @@
     android:textAllCaps="false"
     tools:context="cz.muni.fi.pv239.project.activities.ActivityMainMenu">
 
+    <TextView
+        android:id="@+id/label_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="cursive"
+        android:text="@string/label_title_text"
+        android:textColor="#009688"
+        android:textSize="60dp" />
+
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/button_play"
         android:layout_width="match_parent"
