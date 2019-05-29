@@ -19,7 +19,7 @@
             android:gravity="center"
             android:text="@string/label_high_scores_text"
             android:textColor="#009688"
-            android:textSize="36sp"></TextView>
+            android:textSize="30sp"></TextView>
     </android.support.v7.widget.LinearLayoutCompat>
 
     <android.support.v7.widget.LinearLayoutCompat

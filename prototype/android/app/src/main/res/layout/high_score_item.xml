@@ -7,12 +7,12 @@
     <TextView
         android:id="@+id/text_view_position_number"
         android:layout_width="0dp"
-        android:layout_weight="0.1"
         android:layout_height="wrap_content"
+        android:layout_weight="0.1"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="1."
-        android:textSize="30sp" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/text_view_user"
@@ -23,7 +23,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text="User1"
-        android:textSize="30sp" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/text_view_score"
@@ -34,6 +34,6 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text="123456789"
-        android:textSize="30sp" />
+        android:textSize="18sp" />
 
 </LinearLayout>

@@ -27,7 +27,7 @@
         android:text="@string/button_play_text"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textSize="36sp" />
+        android:textSize="24sp" />
 
 
     <android.support.v7.widget.AppCompatButton
@@ -39,7 +39,7 @@
         android:text="@string/button_high_scores_text"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textSize="36sp" />
+        android:textSize="24sp" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/button_change_user"
@@ -50,6 +50,6 @@
         android:text="@string/button_change_user_text"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textSize="36sp" />
+        android:textSize="24sp" />
 
 </android.support.v7.widget.LinearLayoutCompat>
