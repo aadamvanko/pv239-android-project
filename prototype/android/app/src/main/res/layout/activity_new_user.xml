@@ -7,6 +7,15 @@
     tools:context="cz.muni.fi.pv239.project.activities.ActivityNewUser">
 
     <TextView
+        android:id="@+id/label_new_user_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/button_new_user_text"
+        android:textColor="#009688"
+        android:textSize="30sp" />
+
+    <TextView
         android:id="@+id/label_new_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
