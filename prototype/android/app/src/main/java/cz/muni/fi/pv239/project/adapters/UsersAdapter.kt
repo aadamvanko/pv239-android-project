@@ -1,5 +1,6 @@
 package cz.muni.fi.pv239.project.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,9 +27,12 @@ class UsersAdapter(val users: List<User>, val layoutInflater: LayoutInflater) : 
         val view = layoutInflater.inflate(R.layout.user_item, null)
 
         val name: TextView = view.findViewById(R.id.text_view_name)
-        val selected: TextView = view.findViewById(R.id.text_view_selected)
-        name.text = users[position].name
-        selected.text = if (users[position].selected) "SELECTED" else ""
+        val user = users[position]
+        name.text = user.name
+        if (user.selected) {
+            view.setBackgroundColor(Color.parseColor("#009688"))
+            name.setTextColor(Color.WHITE)
+        }
         return view
     }
 
