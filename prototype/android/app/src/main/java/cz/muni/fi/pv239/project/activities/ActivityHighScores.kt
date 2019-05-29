@@ -6,14 +6,14 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.ListView
 import cz.muni.fi.pv239.project.adapters.HighScoreItemsAdapter
 import cz.muni.fi.pv239.project.db.DatabaseImpl
-import cz.muni.fi.pv239.project.db.DbWorkerThread
+import cz.muni.fi.pv239.project.db.DbWorker
 import cz.muni.fi.pv239.project.entities.HighScoreItem
 import processing.test.project.R
 
 class ActivityHighScores : AppCompatActivity() {
 
     private var database: DatabaseImpl? = null
-    private lateinit var dbWorkerThread: DbWorkerThread
+    private lateinit var dbWorker: DbWorker
     private val mUiHandler = Handler()
 
     private lateinit var highScoreItemsListView: ListView
@@ -24,17 +24,14 @@ class ActivityHighScores : AppCompatActivity() {
 
         highScoreItemsListView = findViewById(R.id.list_view_items)
 
-        dbWorkerThread = DbWorkerThread("dbWorkerThread")
-        dbWorkerThread.start()
-        Thread.sleep(500)
-
+        dbWorker = DbWorker()
         database = DatabaseImpl.getInstance(this)
         loadHighScoreItemsFromDb()
     }
 
     private fun insertHighScoreItemIntoDb(highScoreItem: HighScoreItem) {
         val task = Runnable { database?.highScoreItemDAO()?.insert(highScoreItem) }
-        dbWorkerThread.postTask(task)
+        dbWorker.postTask(task)
     }
 
     private fun loadHighScoreItemsFromDb() {
@@ -48,7 +45,7 @@ class ActivityHighScores : AppCompatActivity() {
                 }
             }
         }
-        dbWorkerThread.postTask(task)
+        dbWorker.postTask(task)
     }
 
     private fun showDataInUI(highScoreItems: List<HighScoreItem>) {
@@ -58,7 +55,7 @@ class ActivityHighScores : AppCompatActivity() {
 
     override fun onDestroy() {
         DatabaseImpl.destroyInstance()
-        dbWorkerThread.quit()
+        dbWorker.destroy()
         super.onDestroy()
     }
 

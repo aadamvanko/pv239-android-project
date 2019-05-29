@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import cz.muni.fi.pv239.project.db.DatabaseImpl
-import cz.muni.fi.pv239.project.db.DbWorkerThread
+import cz.muni.fi.pv239.project.db.DbWorker
 import cz.muni.fi.pv239.project.entities.HighScoreItem
 import cz.muni.fi.pv239.project.game.GameApplet
 import cz.muni.fi.pv239.project.game.GameFragment
@@ -19,7 +19,7 @@ class ActivityPlay : AppCompatActivity(), GameFragmentInterface {
     private lateinit var sketch: PApplet
 
     private var database: DatabaseImpl? = null
-    private lateinit var dbWorkerThread: DbWorkerThread
+    private lateinit var dbWorker: DbWorker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +37,7 @@ class ActivityPlay : AppCompatActivity(), GameFragmentInterface {
         frag.sketch = sketch
         frag.setView(frame, this)
 
-        dbWorkerThread = DbWorkerThread("dbWorkerThread")
-        dbWorkerThread.start()
-        Thread.sleep(200)
-
+        dbWorker = DbWorker()
         database = DatabaseImpl.getInstance(this)
     }
 
@@ -61,7 +58,7 @@ class ActivityPlay : AppCompatActivity(), GameFragmentInterface {
                 }
             }
         }
-        dbWorkerThread.postTask(task)
+        dbWorker.postTask(task)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -90,7 +87,7 @@ class ActivityPlay : AppCompatActivity(), GameFragmentInterface {
     }
 
     override fun onDestroy() {
-        dbWorkerThread.quit()
+        dbWorker.destroy()
         super.onDestroy()
     }
 

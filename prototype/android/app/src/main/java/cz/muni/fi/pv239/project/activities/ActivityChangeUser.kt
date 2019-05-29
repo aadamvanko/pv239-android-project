@@ -11,14 +11,14 @@ import android.view.View
 import android.widget.ListView
 import cz.muni.fi.pv239.project.adapters.UsersAdapter
 import cz.muni.fi.pv239.project.db.DatabaseImpl
-import cz.muni.fi.pv239.project.db.DbWorkerThread
+import cz.muni.fi.pv239.project.db.DbWorker
 import cz.muni.fi.pv239.project.entities.User
 import processing.test.project.R
 
 class ActivityChangeUser : AppCompatActivity() {
 
     private var database: DatabaseImpl? = null
-    private lateinit var dbWorkerThread: DbWorkerThread
+    private lateinit var dbWorker: DbWorker
     private val uiHandler = Handler()
 
     private lateinit var usersListView: ListView
@@ -52,10 +52,7 @@ class ActivityChangeUser : AppCompatActivity() {
             this.startActivity(intent)
         }
 
-        dbWorkerThread = DbWorkerThread("dbWorkerThread")
-        dbWorkerThread.start()
-        Thread.sleep(500)
-
+        dbWorker = DbWorker()
         database = DatabaseImpl.getInstance(this)
         loadUsersFromDb()
     }
@@ -78,7 +75,7 @@ class ActivityChangeUser : AppCompatActivity() {
             }
             loadedUsers = users!!
         }
-        dbWorkerThread.postTask(task)
+        dbWorker.postTask(task)
     }
 
     private fun showDataInUI(users: List<User>) {
@@ -86,7 +83,7 @@ class ActivityChangeUser : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        dbWorkerThread.quit()
+        dbWorker.destroy()
         super.onDestroy()
     }
 
@@ -132,7 +129,7 @@ class ActivityChangeUser : AppCompatActivity() {
                 database?.userDAO()?.update(user)
             }
         }
-        dbWorkerThread.postTask(task)
+        dbWorker.postTask(task)
     }
 
     private fun deleteUser() {
@@ -142,7 +139,7 @@ class ActivityChangeUser : AppCompatActivity() {
                 database?.userDAO()?.delete(user)
             }
         }
-        dbWorkerThread.postTask(task)
+        dbWorker.postTask(task)
     }
 
     private fun loadUserFromDb(): User {

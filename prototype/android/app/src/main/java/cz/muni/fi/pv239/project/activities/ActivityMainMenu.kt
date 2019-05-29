@@ -5,14 +5,14 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Button
 import cz.muni.fi.pv239.project.db.DatabaseImpl
-import cz.muni.fi.pv239.project.db.DbWorkerThread
+import cz.muni.fi.pv239.project.db.DbWorker
 import cz.muni.fi.pv239.project.entities.User
 import processing.test.project.R
 
 class ActivityMainMenu : AppCompatActivity() {
 
     private var database: DatabaseImpl? = null
-    private lateinit var dbWorkerThread: DbWorkerThread
+    private lateinit var dbWorker: DbWorker
 
     private lateinit var buttonPlay: Button
     private lateinit var buttonHighScores: Button
@@ -41,9 +41,7 @@ class ActivityMainMenu : AppCompatActivity() {
             this.startActivity(intent)
         }
 
-        dbWorkerThread = DbWorkerThread("dbWorkerThread")
-        dbWorkerThread.start()
-        Thread.sleep(500)
+        dbWorker = DbWorker()
 
         database = DatabaseImpl.getInstance(this)
         addDefaultUser()
@@ -56,12 +54,12 @@ class ActivityMainMenu : AppCompatActivity() {
                 database?.userDAO()?.insert(User(null, "Unknown", true))
             }
         }
-        dbWorkerThread.postTask(task)
+        dbWorker.postTask(task)
     }
 
     override fun onDestroy() {
         DatabaseImpl.destroyInstance()
-        dbWorkerThread.quit()
+        dbWorker.destroy()
         super.onDestroy()
     }
 
