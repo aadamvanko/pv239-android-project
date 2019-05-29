@@ -26,7 +26,7 @@ class HighScoreItemsAdapter(val highScoreItems: List<HighScoreItem>, val layoutI
         val view = layoutInflater.inflate(R.layout.high_score_item, null)
 
         val positionNumber: TextView = view.findViewById(R.id.text_view_position_number)
-        val scoreText: TextView = view.findViewById(R.id.text_view_score_text)
+        val scoreText: TextView = view.findViewById(R.id.text_view_user)
         positionNumber.text = (position + 1).toString() + "."
         scoreText.text = highScoreItems[position].username + " " + highScoreItems[position].score
         return view

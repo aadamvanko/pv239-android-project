@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/text_view_position_number"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.1"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="1."
-        android:textSize="30sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="30sp" />
 
     <TextView
-        android:id="@+id/text_view_score_text"
-        android:layout_width="wrap_content"
+        android:id="@+id/text_view_user"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:text="User1 123456789"
-        android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_weight="0.3"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="User1"
+        android:textSize="30sp" />
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/text_view_score"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_weight="0.6"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="123456789"
+        android:textSize="30sp" />
+
+</LinearLayout>
